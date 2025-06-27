@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Envelope Love Letter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Envelope CSS -->
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: #fff;
+    }
+    #canvas {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      display: block;
+    }
+    .envelope-container {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100vw;
+      pointer-events: none;
+    }
+    .envelope {
+      width: 320px;
+      height: 200px;
+      position: relative;
+      background: #fff;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.22), 0 1.5px 3px rgba(0,0,0,0.05);
+      border-radius: 0 0 20px 20px/0 0 40px 40px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      pointer-events: auto;
+    }
+    .envelope:before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 0; right: 0;
+      height: 100px;
+      background: linear-gradient(135deg, #f77ca2 70%, #fff 100%);
+      border-bottom-left-radius: 160px 100px;
+      border-bottom-right-radius: 160px 100px;
+      z-index: 1;
+    }
+    .envelope .letter {
+      position: absolute;
+      left: 20px; right: 20px; top: 40px; bottom: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.08);
+      padding: 24px 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .envelope .letter h1 {
+      margin: 0 0 0.5em 0;
+      color: #d72660;
+      font-family: 'Segoe Script', cursive, sans-serif;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-align: center;
+    }
+    .envelope .letter p {
+      margin: 1em 0 0 0;
+      font-size: 1.1em;
+      color: #333;
+      line-height: 1.5;
+      text-align: center;
+    }
+    .love-counter-block {
+      margin-top: 1.2em;
+      background: #fff0f5;
+      border-radius: 8px;
+      padding: 0.6em 1em;
+      box-shadow: 0 1px 5px rgba(215,38,96,0.10);
+      font-size: 1.15em;
+      font-weight: bold;
+      color: #d72660;
+      display: inline-block;
+    }
+    .heart {
+      width: 40px; height: 40px;
+      background: #d72660;
+      position: absolute;
+      left: 50%; bottom: -20px;
+      transform: translateX(-50%) scale(1.1);
+      clip-path: polygon(50% 95%, 100% 50%, 82% 15%, 50% 35%, 18% 15%, 0% 50%);
+      box-shadow: 0 2px 12px rgba(215,38,96,0.22);
+      z-index: 3;
+    }
+    .love-link {
+      color:#d72660;
+      text-decoration:none;
+      font-weight:bold;
+      margin-top: 0.5em;
+      background: #fff0f5;
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      transition: background 0.2s;
+      pointer-events: auto;
+      box-shadow: 0 1px 4px rgba(215,38,96,0.08);
+    }
+    .love-link:hover {
+      background: #ffd4e0;
+    }
+
+    @media (max-width: 400px) {
+      .envelope { width: 95vw; }
+      .envelope .letter { left: 5px; right: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div class="envelope-container">
+    <div class="envelope">
+      <div class="letter">
+        <h1>My Love 💌</h1>
+        <p>
+          Every day with you is a new page in our beautiful story.<br>
+          I cherish you now and always.
+        </p>
+        <div class="love-counter-block">
+          💗 We're in love for:<br>
+          <span id="love-counter"></span>
+        </div>
+      </div>
+      <div class="heart"></div>
+    </div>
+    <a class="love-link" href="https://lovecounter.pp.ua/?d=1720800000000" target="_blank">
+      Open in Love Counter
+    </a>
+  </div>
+  <script src="heart-animation.js"></script>
+  <script>
+    // Love counter: calculates and updates live
+    const startDate = 1720800000000; // Set your anniversary timestamp in ms
+    function updateLoveCounter() {
+      let now = Date.now();
+      let diff = now - startDate;
+      let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30.44));
+      diff -= months * (1000 * 60 * 60 * 24 * 30.44);
+      let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      diff -= days * (1000 * 60 * 60 * 24);
+      let hours = Math.floor(diff / (1000 * 60 * 60));
+      diff -= hours * (1000 * 60 * 60);
+      let minutes = Math.floor(diff / (1000 * 60));
+      diff -= minutes * (1000 * 60);
+      let seconds = Math.floor(diff / 1000);
+      document.getElementById('love-counter').innerText =
+        `${months} month${months !== 1 ? 's' : ''}, `
+        + `${days} day${days !== 1 ? 's' : ''}, `
+        + `${hours} hour${hours !== 1 ? 's' : ''}, `
+        + `${minutes} minute${minutes !== 1 ? 's' : ''}, `
+        + `${seconds} second${seconds !== 1 ? 's' : ''}`;
+    }
+    setInterval(updateLoveCounter, 1000);
+    updateLoveCounter();
+  </script>
+</body>
+</html>
